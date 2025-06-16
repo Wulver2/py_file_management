@@ -3,6 +3,7 @@ from pathlib import Path
 import re
 import datetime
 import platform
+import shutil
 
 
 # should allow anyone to use on their computer without having to change paths
@@ -97,8 +98,9 @@ def move_photos():
                 os.makedirs(targetFolder)
 
             targetFile = targetFolder + "/" + file
+            sourceFile = str(source) + "/" + file
             if(not os.path.exists(targetFile)):
-                  print(targetFile)
+                  shutil.move(sourceFile, targetFile)
 
 
 def main():
