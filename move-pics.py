@@ -8,8 +8,8 @@ import shutil
 
 # should allow anyone to use on their computer without having to change paths
 source = Path.home() / "Downloads"
-target = Path.home() / "Documents/photos"
-EXTS = ("jpg", "png", "jpeg", "mov", "mp4", "mp3")
+PHOTO_EXTS = ("jpg", "png", "jpeg", "mov", "mp4", "mp3")
+FILE_EXTS = ("pdf", "docx", "txt")
 # year/month/day
 DATE_PATTERN = r".*(20\d\d)-?([01]\d)-?([0123]\d).*"
 
@@ -18,8 +18,13 @@ files = os.listdir(source)
 # includes videos as well, may create one for to organize .pdf and .txt files
 # add option for screenshots
 def is_photo(file):
-    if (file.lower().endswith(tuple(EXTS))) :
+    if (file.lower().endswith(tuple(PHOTO_EXTS))) :
             return True
+    return False
+
+def is_doc(file):
+    if (file.lower().endswith(tuple(FILE_EXTS))) :
+        return True
     return False
 
 def get_date(folder, file):
@@ -80,39 +85,47 @@ def getFolder(year, monthNumber):
   
     return year + "/" + monthFolder
 
+def move(target, file):
+    date = get_date(source, file)
+    year = date["year"]
+    month = date["month"]
 
-def move_photos():
+    if (year == "0" or month == "0"):
+        print("Unable to extract date: " + file)
+        return
+
+    folder = getFolder(year, month)
+    targetFolder = str(target) + "/" + folder
+
+    if (not os.path.exists(targetFolder)):
+        os.makedirs(targetFolder)
+
+    targetFile = targetFolder + "/" + file
+    sourceFile = str(source) + "/" + file
+    if (not os.path.exists(targetFile)):
+        shutil.move(sourceFile, targetFile)
+    else:
+        # If it already exists and is exactly the same size then delete it.
+        if (os.stat(sourceFile).st_size == os.stat(targetFile).st_size):
+            print("Duplicate file, deleting: " + file)
+            os.remove(sourceFile)
+        else:
+            print("Duplicate file, different size: " + file)
+
+
+def move_files():
     for file in files:
-         if (is_photo(file)):
-            date = get_date(source, file)
-            year = date["year"]
-            month = date["month"]
-
-            if (year == "0" or month == "0"):
-                continue
-
-            folder = getFolder(year, month)
-            targetFolder = str(target) + "/" + folder
-
-            if (not os.path.exists(targetFolder)):
-                os.makedirs(targetFolder)
-
-            targetFile = targetFolder + "/" + file
-            sourceFile = str(source) + "/" + file
-            if (not os.path.exists(targetFile)):
-                  shutil.move(sourceFile, targetFile)
-            else:
-                # If it already exists and is exactly the same size then delete it.
-                if os.stat(sourceFile).st_size == os.stat(targetFile).st_size:
-                    print("Duplicate file, deleting: " + file)
-                    os.remove(sourceFile)
-                else:
-                    print("Duplicate file, different size: " + file)
-
+        if (is_photo(file)):
+            target = Path.home() / "Documents/photos"
+            move(target, file)
+        elif (is_doc(file)):
+            target = Path.home() / "Documents/docs"
+            move(target, file)
+            
 
 
 def main():
-    move_photos()
+    move_files()
 
 if __name__=="__main__":
     main()
