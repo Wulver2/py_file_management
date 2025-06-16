@@ -26,15 +26,17 @@ def get_date(folder, file):
     if (matchObj):
          year = matchObj.group(1)
          month = matchObj.group(2)
-         print(year)
-         print(month)
     else: 
-         dateCreated = creation_date(str(folder) + "/" + file)
-         matchObj = re.match(DATE_PATTERN, dateCreated)
-         year = matchObj.group(1)
-         month = matchObj.group(2)
-         print(year)
-         print(month)
+        dateCreated = creation_date(str(folder) + "/" + file)
+        matchObj = re.match(DATE_PATTERN, dateCreated)
+        if (matchObj):
+            year = matchObj.group(1)
+            month = matchObj.group(2)
+        else:
+            year = "0"
+            month = "0"
+            print("Unble to get date: " + file)
+         
     return {"year": year, "month": month}
          
     
