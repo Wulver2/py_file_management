@@ -99,8 +99,16 @@ def move_photos():
 
             targetFile = targetFolder + "/" + file
             sourceFile = str(source) + "/" + file
-            if(not os.path.exists(targetFile)):
+            if (not os.path.exists(targetFile)):
                   shutil.move(sourceFile, targetFile)
+            else:
+                # If it already exists and is exactly the same size then delete it.
+                if os.stat(sourceFile).st_size == os.stat(targetFile).st_size:
+                    print("Duplicate file, deleting: " + file)
+                    os.remove(sourceFile)
+                else:
+                    print("Duplicate file, different size: " + file)
+
 
 
 def main():
