@@ -9,7 +9,7 @@ import shutil
 # should allow anyone to use on their computer without having to change paths
 source = Path.home() / "Downloads"
 PHOTO_EXTS = ("jpg", "png", "jpeg", "mov", "mp4", "mp3")
-FILE_EXTS = ("pdf", "docx", "txt")
+DOC_EXTS = ("pdf", "docx", "txt")
 # year/month/day
 DATE_PATTERN = r".*(20\d\d)-?([01]\d)-?([0123]\d).*"
 
@@ -23,7 +23,7 @@ def is_photo(file):
     return False
 
 def is_doc(file):
-    if (file.lower().endswith(tuple(FILE_EXTS))) :
+    if (file.lower().endswith(tuple(DOC_EXTS))) :
         return True
     return False
 
@@ -82,7 +82,7 @@ def getFolder(year, monthNumber):
         monthFolder = "11_November"
     elif (monthNumber == "12"):
         monthFolder = "12_December"
-  
+    
     return year + "/" + monthFolder
 
 def move(target, file):
